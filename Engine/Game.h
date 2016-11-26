@@ -19,7 +19,7 @@
  *	along with The Chili DirectX Framework.  If not, see <http://www.gnu.org/licenses/>.  *
  ******************************************************************************************/
 #pragma once
-
+#include <vector>
 #include "Keyboard.h"
 #include "Mouse.h"
 #include "Graphics.h"
