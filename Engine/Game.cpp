@@ -40,15 +40,17 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	mathVect<float> test1(std::vector<float> {1, 5, 4}, vertical);
-	mathVect<float> test2(std::vector<float> { 8.0f, -4.0f, 17.5f }, horizontal);
-
-	mathVect<float> result = test1 + test2;
-	mathVect<float> result2 = test1 - test2;
+//	mathVect<float> test2(std::vector<float> { 8.0f, -4.0f, 17.5f }, vertical);
+	gMatrix<float> testM;
+	mathVect<float> test2 = testM*test1;
 	float testMult = test1*test2;
 	std::wstring title = L"TestTitle";
-	wnd.ShowMessageBox(title, std::to_wstring(test1.Length()));
-	wnd.ShowMessageBox(title, std::to_wstring(test2.Length()));
-	wnd.ShowMessageBox(title, std::to_wstring(testMult));
+	int a = 0;
+	int i;
+	for (i = 0; i < 4; i++)
+	{
+		wnd.ShowMessageBox(title, std::to_wstring(test2(i)));		
+	}
 }
 
 void Game::ComposeFrame()
