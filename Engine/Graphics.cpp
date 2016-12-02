@@ -309,8 +309,110 @@ void Graphics::PutPixel( int x,int y,Color c )
 	assert( y < int( Graphics::ScreenHeight ) );
 	pSysBuffer[Graphics::ScreenWidth * y + x] = c;
 }
+void Graphics::PutPixel(float x, float y, Color c)
+{
+	PutPixel((int)x, (int)y, c);
+}
+void Graphics::DrawRectangle(float x1, float y1, float x2, float y2, float rotation, Color c)
+{
+	mathVect<float> point1(2), point2(2), point3(2), point4(2), pivot(2);
 
 
+	point1(0) = x1;
+	point1(1) = y1;
+
+	point2(0) = x1;
+	point2(1) = y2;
+
+	point3(0) = x2;
+	point3(1) = y1;
+
+	point4(0) = x2;
+	point4(1) = y2;
+	
+	pivot(0) = x1 + (abs((x1 - x2)) / 2);
+	pivot(1) = y1 + (abs((y1 - y2)) / 2);
+
+	Rotate(point1, rotation, pivot);
+	Rotate(point2, rotation, pivot);
+	Rotate(point3, rotation, pivot);
+	Rotate(point4, rotation, pivot);
+
+	DrawLine(point1, point2, c);
+	DrawLine(point1, point3, c);
+	DrawLine(point4, point2, c);
+	DrawLine(point4, point3, c);
+
+}
+void Graphics::DrawLine(mathVect<float> &point1, mathVect<float> &point2, Color c)
+{
+	/*code Below works but is rather slow
+	mathVect<float> drawingVector(2);
+	drawingVector(0) = point2(0) - point1(0);
+	drawingVector(1) = point2(1) - point1(1);
+
+	int length = drawingVector.Length();
+	int i;
+	for (i = 0; i < length; i++)
+	{
+		float ratio = ((float)i / (float)length);
+		PutPixel(point1(0) + (drawingVector*ratio)(0), point1(1) + (drawingVector*ratio)(1), c);
+	}
+	*/
+
+	//Code below taken from project inovative power
+
+	int dx = point2(0) - point1(0);
+	int dy = point2(1) - point1(1);
+	float length = sqrt(dx*dx + dy*dy);
+	int i;
+	float xRatio = dx / length;
+	float yRatio = dy / length;
+
+	for (i = 0; i <= length / 2 + 1; i++)
+	{
+		int xPos = i*xRatio;
+		int yPos = i*yRatio;
+
+			PutPixel(point1(0) + xPos, point1(1) + yPos, c);
+			PutPixel(point2(0) - xPos, point2(1) - yPos, c);
+	}
+}
+void Graphics::DrawLine(float x1, float y1, float x2, float y2, Color c)
+{
+	mathVect<float> drawingVector(2);
+
+	drawingVector(0) = x2 -x1;
+	drawingVector(1) = y2 -y1;
+	int length = drawingVector.Length();
+	int i;
+	for(i = 0; i < length; i++)
+	{
+		float ratio = ((float)i / (float)length);
+		PutPixel(x1 + (drawingVector*ratio)(0), y1 + (drawingVector*ratio)(1),c);
+	}
+}
+void Graphics::Rotate(mathVect<float> &vertex, float angle, mathVect<float>& pivot)
+
+{
+	float xOff = pivot(0);
+	float yOff = pivot(1);
+
+	vertex(0)-= xOff;
+	vertex(1)-= yOff;
+	float radians = (3.14159*angle) / 180;
+	gMatrix<float> rotationMatrix(2, 2);
+	rotationMatrix(0, 0) = cos(radians);
+	rotationMatrix(0, 1) = -sin(radians);
+	rotationMatrix(1, 0) = sin(radians);
+	rotationMatrix(1, 1) = cos(radians);
+
+	vertex = rotationMatrix* (vertex);
+	vertex(0) += xOff;
+	vertex(1) += yOff;
+
+
+}
 //////////////////////////////////////////////////
 //           Graphics Exception
 Graphics::Exception::Exception( HRESULT hr,const std::wstring& note,const wchar_t* file,unsigned int line )

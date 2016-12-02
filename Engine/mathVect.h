@@ -13,9 +13,25 @@ public:
 	//Constructors
 	mathVect()
 	{
-		size = 3;
+		size = 2;
 		elements.resize(size);
 		orientation = vertical;
+		int i;
+		for (i = 0; i < size; i++)
+		{
+			elements[i] = 0;
+		}
+	}
+	mathVect(int size)
+	{
+		this->size = size;
+		elements.resize(size);
+		orientation = vertical;
+		int i;
+		for (i = 0; i < size; i++)
+		{
+			elements[i] = 0;
+		}
 	}
 	mathVect(const std::vector<T> &inV, VectorOrientation orientation)
 	{
@@ -23,6 +39,11 @@ public:
 		elements.resize(size);
 		elements = inV;
 		this->orientation = orientation;
+		int i;
+		for (i = 0; i < size; i++)
+		{
+			elements[i] = 0;
+		}
 	}
 	
 	//Vector operations
@@ -37,7 +58,11 @@ public:
 		elements.resize(size);
 		elements = inV;
 	}
-
+	void SetSize(int newSize)
+	{
+		size = newSize;
+		elements.resize(newSize);
+	}
 
 	//Information retrieval
 	const int Size()
@@ -174,24 +199,53 @@ public :
 		width = 3;
 		height = 3;
 		rowVectors.resize(width);
-		rowVectors.resize(height);
-		rowVectors[0](0) = (T)17; rowVectors[0](1) = (T)6; rowVectors[0](2) = (T)543;
-		rowVectors[1](0) = (T)-9; rowVectors[1](1) = (T)65; rowVectors[1](2) = (T)432;
-		rowVectors[2](0) = (T)-77; rowVectors[2](1) = (T)-453; rowVectors[2](2) = (T)33.4;
+		collumnVectors.resize(height);
+		ResizeCollumns();
+		ResizeRows();
+		rowVectors[0](0) = (T)0; rowVectors[0](1) = (T)0; rowVectors[0](2) = (T)0
+		rowVectors[1](0) = (T)0; rowVectors[1](1) = (T)0; rowVectors[1](2) = (T)0;
+		rowVectors[2](0) = (T)0; rowVectors[2](1) = (T)0; rowVectors[2](2) = (T)0;
+		lastUpdated = horizontal;
 	}
+	gMatrix(int width, int height)
+	{
 
+			this->width = width;
+			this->height = height;
+			rowVectors.resize(width);
+			collumnVectors.resize(height);
+			
+			ResizeCollumns();
+			ResizeRows();
+			int i, j;
+			for (i = 0; i < width; i++)
+			{
+				for (j = 0; j < height; j++)
+				{
+					rowVectors[j](i) = (T)0;
+				}
+				
+			}
+			lastUpdated = horizontal;
+	}
 	//Operators
 	T& operator()(int row, int collumn)
 	{
+		UpdateCollumns();
 		mathVect<T> *rowVect = &rowVectors[row];
+
 		return (*rowVect)(collumn);
 	}
 	mathVect<T>& operator()(int index, VectorOrientation orientation)
 	{
-		if (orientation = vertical)
+		if (orientation == vertical)
 		{
+			
+			UpdateCollumns();
+
 			return collumnVectors[index];
 		}
+		UpdateRows();
 		return rowVectors[index];
 		
 	}
@@ -215,8 +269,57 @@ public :
 	}
 
 private:
+	void UpdateRows()
+	{
+		if (lastUpdated == vertical)
+		{
+			int i, j;
+			for (j = 0; j < height; j++)
+			{
+				for (i = 0; i < width; i++)
+				{
+					rowVectors[j](i) = collumnVectors[i](j);
+
+				}
+			}
+		}
+		lastUpdated = horizontal;
+	}
+	void UpdateCollumns()
+	{
+		if (lastUpdated == horizontal)
+		{
+			int i, j;
+			for (j = 0; j < height; j++)
+			{
+				for (i = 0; i < width; i++)
+				{
+					collumnVectors[j](i) = rowVectors[i](j);
+
+				}
+			}
+		}
+		lastUpdated = vertical;
+	}
+	void ResizeCollumns()
+	{
+		int i;
+		for (i = 0; i < width; i++)
+		{
+			collumnVectors[i].SetSize(height);
+		}
+	}
+	void ResizeRows()
+	{
+		int i;
+		for (i = 0; i < height; i++)
+		{
+			collumnVectors[i].SetSize(width);
+		}
+	}
 	std::vector<mathVect<T>> rowVectors;
 	std::vector<mathVect<T>> collumnVectors;
+	VectorOrientation lastUpdated;
 	int width;
 	int height;
 };

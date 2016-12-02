@@ -23,7 +23,7 @@
 #include <wrl.h>
 #include "ChiliException.h"
 #include "Colors.h"
-
+#include "mathVect.h"
 #define CHILI_GFX_EXCEPTION( hr,note ) Graphics::Exception( hr,note,_CRT_WIDE(__FILE__),__LINE__ )
 
 class Graphics
@@ -58,7 +58,20 @@ public:
 		PutPixel( x,y,{ unsigned char( r ),unsigned char( g ),unsigned char( b ) } );
 	}
 	void PutPixel( int x,int y,Color c );
+	void PutPixel(float x, float y, Color c);
 	~Graphics();
+
+
+
+	void DrawRectangle(float x1, float y1, float x2, float y2, float rotation, Color c);
+
+	void Rotate(mathVect<float> &vertex, float angle, mathVect<float>& pivot);
+	void DrawLine(float x1, float y1, float x2, float y2, Color c);
+	void DrawLine(mathVect<float>&point1, mathVect<float> &point2, Color c);
+
+
+
+
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;
 	Microsoft::WRL::ComPtr<ID3D11Device>				pDevice;

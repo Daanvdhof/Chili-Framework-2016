@@ -25,7 +25,8 @@
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	angle(0)
 {
 }
 
@@ -39,20 +40,19 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	mathVect<float> test1(std::vector<float> {1, 5, 4}, vertical);
-//	mathVect<float> test2(std::vector<float> { 8.0f, -4.0f, 17.5f }, vertical);
-	gMatrix<float> testM;
-	mathVect<float> test2 = testM*test1;
-	float testMult = test1*test2;
-	std::wstring title = L"TestTitle";
-	int a = 0;
-	int i;
-	for (i = 0; i < 4; i++)
-	{
-		wnd.ShowMessageBox(title, std::to_wstring(test2(i)));		
-	}
+	gfx.DrawRectangle(100, 100, 150, 150, angle, Colors::White);
+	gfx.DrawRectangle(100, 100, 400, 400, angle, Colors::White);
+	gfx.DrawRectangle(100, 100, 300, 300, angle, Colors::White);
+	gfx.DrawRectangle(100, 100, 200, 200,angle,Colors::White);
+	//gfx.DrawLine(200,200,wnd.mouse.GetPosX(), wnd.mouse.GetPosY(), Colors::White);
 }
+
 
 void Game::ComposeFrame()
 {
+	angle += 1;
+	if (angle >= 360)
+	{
+		angle = angle -360;
+	}
 }

@@ -40,6 +40,7 @@ private:
 private:
 	MainWindow& wnd;
 	Graphics gfx;
+	float angle;
 	/********************************/
 	/*  User Variables              */
 	/********************************/
